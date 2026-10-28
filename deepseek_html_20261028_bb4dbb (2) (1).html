@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Obesidade & SM — Plataforma Gamificada</title>
+<style>
+:root{
+  --bg:#070b1a; --card:rgba(255,255,255,.05); --card2:rgba(255,255,255,.09);
+  --border:rgba(255,255,255,.11); --txt:#e9edff; --muted:#8b95b8;
+  --green:#34d399; --red:#f87171; --yellow:#fbbf24; --cyan:#22d3ee;
+  --violet:#a78bfa; --pink:#f472b6; --amber:#fbbf24; --blue:#60a5fa; --orange:#fb923c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+  background:
+    radial-gradient(1100px 700px at 5% -10%, rgba(99,102,241,.22), transparent 60%),
+    radial-gradient(900px 600px at 105% 5%, rgba(244,114,182,.15), transparent 60%),
+    radial-gradient(900px 700px at 50% 110%, rgba(34,211,238,.10), transparent 60%),
+    linear-gradient(180deg,#070b1a,#0a1026 55%,#070b1a);
+  background-attachment:fixed;
+  color:var(--txt); min-height:100vh; padding-bottom:90px;
+  -webkit-font-smoothing:antialiased;
+}
+#app{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* ---------- HEADER ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(7,11,26,.82);border-bottom:1px solid var(--border);
+  margin:0 -16px 22px;padding:12px 16px;
+}
+.topbar-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:15px;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.lvl{
+  display:flex;align-items:center;gap:8px;margin-left:auto;
+  background:linear-gradient(135deg,rgba(99,102,241,.28),rgba(34,211,238,.18));
+  border:1px solid rgba(139,150,255,.35);padding:6px 12px;border-radius:999px;
+  font-size:12.5px;font-weight:800;white-space:nowrap;
+}
+.xpwrap{flex:1 1 220px;min-width:150px}
+.xpmeta{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:4px}
+.xpbar{height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}
+.xpfill{
+  height:100%;border-radius:999px;width:0%;
+  background:linear-gradient(90deg,#22d3ee,#a78bfa,#f472b6);
+  transition:width .7s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 0 14px rgba(167,139,250,.65);
+}
+
+/* ---------- CARDS ---------- */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:14px;
+  transition:.25s;
+}
+.card:hover{border-color:rgba(255,255,255,.2)}
+.card h3{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h4{font-size:13px;margin:12px 0 6px;color:var(--cyan)}
+.card p,.card li{font-size:13.5px;line-height:1.65;color:#cfd6f5}
+.card ul{padding-left:20px;margin:6px 0}
+.card li{margin-bottom:4px}
+b,strong{color:#fff}
+.small{font-size:12px;color:var(--muted)}
+
+/* ---------- MISSION GRID ---------- */
+.hero{
+  text-align:center;padding:26px 16px 20px;
+}
+.hero h1{font-size:clamp(22px,4.4vw,34px);font-weight:900;letter-spacing:-.5px;line-height:1.15;
+  background:linear-gradient(100deg,#22d3ee,#a78bfa 45%,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{color:var(--muted);font-size:13.5px;margin-top:8px}
+.pillrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.pill{font-size:11px;font-weight:800;padding:5px 12px;border-radius:999px;letter-spacing:.4px}
+.pill.r{background:rgba(248,113,113,.16);color:#fca5a5;border:1px solid rgba(248,113,113,.35)}
+.pill.y{background:rgba(251,191,36,.14);color:#fcd34d;border:1px solid rgba(251,191,36,.32)}
+.pill.g{background:rgba(52,211,153,.14);color:#6ee7b7;border:1px solid rgba(52,211,153,.32)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px;margin-top:16px}
+.mission{
+  position:relative;background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:18px 16px;cursor:pointer;transition:.25s cubic-bezier(.22,1,.36,1);overflow:hidden;
+}
+.mission::before{content:'';position:absolute;inset:0;opacity:0;transition:.3s;
+  background:radial-gradient(220px 140px at 50% 0%,var(--mc),transparent 70%)}
+.mission:hover{transform:translateY(-4px);border-color:var(--mc);box-shadow:0 14px 40px -12px var(--mc)}
+.mission:hover::before{opacity:.22}
+.mission.done{border-color:rgba(52,211,153,.55);background:rgba(52,211,153,.06)}
+.mission-top{display:flex;align-items:center;gap:11px;margin-bottom:9px;position:relative}
+.m-icon{
+  width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:23px;
+  background:linear-gradient(135deg,var(--mc),transparent 140%);
+  border:1px solid var(--mc);box-shadow:0 0 22px -6px var(--mc);flex:none;
+}
+.m-num{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:1.2px}
+.m-title{font-size:13.5px;font-weight:800;line-height:1.3;position:relative}
+.m-prog{margin-top:12px;position:relative}
+.m-prog .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+.m-prog .fill{height:100%;background:linear-gradient(90deg,var(--mc),#fff6);border-radius:99px;transition:width .6s;width:0}
+.m-meta{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:6px;font-weight:700}
+.checkmark{position:absolute;top:10px;right:12px;font-size:15px;opacity:0;transition:.3s}
+.mission.done .checkmark{opacity:1}
+
+/* ---------- TABS ---------- */
+.tabs{display:flex;gap:7px;margin:0 0 16px;flex-wrap:wrap}
+.tab{
+  padding:9px 15px;border-radius:11px;background:var(--card);border:1px solid var(--border);
+  font-size:12.5px;font-weight:800;cursor:pointer;transition:.2s;color:var(--muted);
+}
+.tab:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+.tab.on{background:linear-gradient(135deg,rgba(99,102,241,.4),rgba(34,211,238,.22));color:#fff;border-color:rgba(139,150,255,.6)}
+
+/* ---------- TABLES ---------- */
+table{width:100%;border-collapse:collapse;margin:9px 0;font-size:12.5px}
+th{background:rgba(255,255,255,.07);padding:9px 10px;text-align:left;font-weight:800;font-size:11.5px;
+  letter-spacing:.4px;color:#b9c2e8;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.06);color:#cfd6f5;line-height:1.5}
+tr:hover td{background:rgba(255,255,255,.03)}
+td:first-child{font-weight:700;color:#fff}
+
+/* ---------- QUIZ ---------- */
+.qbox{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;
+}
+.qhead{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.qnum{
+  font-size:10.5px;font-weight:900;padding:4px 9px;border-radius:7px;
+  background:rgba(99,102,241,.22);color:#a5b4fc;border:1px solid rgba(99,102,241,.4);letter-spacing:.6px;flex:none;
+}
+.qtext{font-size:14px;font-weight:700;line-height:1.5;color:#fff}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:13px}
+.opt{
+  text-align:left;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);color:#cfd6f5;font-size:13px;cursor:pointer;
+  transition:.18s;display:flex;gap:10px;align-items:flex-start;line-height:1.45;font-family:inherit;
+}
+.opt:hover:not(:disabled){background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateX(3px)}
+.opt:disabled{cursor:default}
+.opt .ltr{
+  font-weight:900;font-size:11px;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;
+  background:rgba(255,255,255,.1);flex:none;margin-top:1px;
+}
+.opt.correct{background:rgba(52,211,153,.15);border-color:var(--green);color:#a7f3d0}
+.opt.correct .ltr{background:var(--green);color:#04241a}
+.opt.wrong{background:rgba(248,113,113,.13);border-color:var(--red);color:#fecaca}
+.opt.wrong .ltr{background:var(--red);color:#2b0808}
+.opt.dim{opacity:.45}
+.explain{
+  margin-top:12px;padding:11px 13px;border-radius:10px;font-size:12.5px;line-height:1.6;
+  background:rgba(34,211,238,.08);border-left:3px solid var(--cyan);color:#b8e6f2;
+  animation:slideIn .35s ease;
+}
+.explain.gold{background:rgba(251,191,36,.08);border-left-color:var(--yellow);color:#fde9a8}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* ---------- CALLOUTS ---------- */
+.gold,.warn,.err,.ok{border-radius:12px;padding:12px 14px;margin:11px 0;font-size:12.8px;line-height:1.6;border-left:3px solid}
+.gold{background:rgba(251,191,36,.09);border-color:var(--yellow);color:#fde9a8}
+.warn{background:rgba(248,113,113,.08);border-color:var(--red);color:#fecaca}
+.err{background:rgba(244,114,182,.08);border-color:var(--pink);color:#fbcfe8}
+.ok{background:rgba(52,211,153,.08);border-color:var(--green);color:#a7f3d0}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  padding:11px 20px;border-radius:12px;border:1px solid var(--border);background:var(--card2);
+  color:#fff;font-weight:800;font-size:13px;cursor:pointer;transition:.2s;font-family:inherit;
+}
+.btn:hover{background:rgba(255,255,255,.16);transform:translateY(-2px)}
+.btn.primary{background:linear-gradient(135deg,#6366f1,#22d3ee);border:none;box-shadow:0 8px 26px -8px #6366f1}
+.btn.primary:hover{box-shadow:0 12px 34px -8px #22d3ee}
+.btn.ghost{background:transparent}
+.btn.sm{padding:7px 13px;font-size:11.5px;border-radius:9px}
+
+/* ---------- BONUS ---------- */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.acc-h{padding:14px 16px;cursor:pointer;display:flex;gap:11px;align-items:center;font-size:13px;font-weight:800;transition:.2s}
+.acc-h:hover{background:rgba(255,255,255,.05)}
+.acc-h .chev{margin-left:auto;transition:.3s;color:var(--muted);font-size:12px}
+.acc.open .chev{transform:rotate(180deg)}
+.acc-b{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 16px}
+.acc.open .acc-b{max-height:900px;padding:0 16px 16px}
+
+/* ---------- FLASHCARD ---------- */
+.fc{
+  perspective:1200px;height:210px;cursor:pointer;margin-bottom:16px;
+}
+.fc-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.fc.flip .fc-inner{transform:rotateY(180deg)}
+.fc-face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:18px;padding:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;border:1px solid var(--border);background:var(--card);
+}
+.fc-front{background:linear-gradient(135deg,rgba(99,102,241,.18),rgba(34,211,238,.08));border-color:rgba(139,150,255,.4)}
+.fc-back{transform:rotateY(180deg);background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(34,211,238,.06));border-color:rgba(52,211,153,.4)}
+.fc-q{font-size:16px;font-weight:800;line-height:1.45}
+.fc-a{font-size:14px;font-weight:700;color:#a7f3d0;line-height:1.6}
+.fc-hint{font-size:10.5px;color:var(--muted);margin-top:14px;letter-spacing:.8px;font-weight:700}
+
+/* ---------- CHEATSHEET ---------- */
+.search{
+  width:100%;padding:13px 16px;border-radius:12px;background:var(--card);border:1px solid var(--border);
+  color:#fff;font-size:13.5px;font-family:inherit;margin-bottom:14px;outline:none;
+}
+.search:focus{border-color:rgba(139,150,255,.6);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.cs-row{display:flex;gap:12px;padding:11px 14px;border-radius:10px;background:var(--card);
+  border:1px solid var(--border);margin-bottom:7px;font-size:13px;align-items:center}
+.cs-k{font-weight:800;color:#a5b4fc;flex:0 0 40%;font-size:12.5px}
+.cs-v{color:#dbe2ff;flex:1;line-height:1.5}
+
+/* ---------- MISC ---------- */
+.back{margin-bottom:14px}
+.mission-head{
+  border-radius:18px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--mc) 0%,transparent 75%);
+  border:1px solid var(--mc);
+}
+.mission-head::after{content:'';position:absolute;inset:0;background:rgba(7,11,26,.72);z-index:0}
+.mission-head>*{position:relative;z-index:1}
+.mission-head h2{font-size:20px;font-weight:900;margin-bottom:5px}
+.mission-head p{font-size:12.5px;color:#c3cbe8}
+
+.timer{font-variant-numeric:tabular-nums;font-weight:900;font-size:20px;color:var(--cyan)}
+.timer.danger{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.45}}
+
+.confetti{position:fixed;top:-24px;width:9px;height:14px;z-index:9999;pointer-events:none;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(106vh) rotate(760deg);opacity:.15}}
+
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:linear-gradient(135deg,#6366f1,#22d3ee);color:#fff;padding:12px 22px;border-radius:14px;
+  font-weight:900;font-size:13.5px;z-index:9998;box-shadow:0 14px 40px -10px #6366f1;
+  opacity:0;transition:.4s cubic-bezier(.22,1,.36,1);pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.progress-dots{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.pd{width:22px;height:5px;border-radius:99px;background:rgba(255,255,255,.13)}
+.pd.ok{background:var(--green)}
+.pd.no{background:var(--red)}
+.pd.now{background:var(--cyan);animation:pulse 1.4s infinite}
+
+.fab{
+  position:fixed;bottom:20px;right:20px;width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#22d3ee);border:none;color:#fff;font-size:23px;
+  cursor:pointer;box-shadow:0 10px 34px -8px #6366f1;z-index:60;transition:.25s;display:grid;place-items:center;
+}
+.fab:hover{transform:scale(1.09) rotate(8deg)}
+
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
+  .cs-k{flex:0 0 100%}
+  .cs-row{flex-direction:column;gap:3px}
+  .brand{font-size:13px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<button class="fab" id="fab" title="Revisão rápida">⚡</button>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DADOS
+   ═══════════════════════════════════════════════════════════════ */
+
+const MISSIONS = [
+{
+  id:1, icon:"🌍", color:"#22d3ee", title:"Visão Geral e Epidemiologia", prio:"g",
+  sub:"Definição, doença crônica e números",
+  content:[
+    {h:"Definição de Obesidade", b:`
+      <p><b>Obesidade</b> = doença <b>crônica, recidivante e progressiva</b>, caracterizada por excesso de adiposidade que prejudica a saúde.</p>
+      <ul>
+        <li>Reconhecida como doença pela <b>OMS (1997)</b> e pela <b>AMA (2013)</b>.</li>
+        <li>Não é falha de vontade — é <b>doença multifatorial</b> com base genética, ambiental e neuroendócrina.</li>
+      </ul>
+      <div class="gold">💎 <b>Dica de Ouro:</b> "A obesidade é uma pandemia?" → <b>Sim.</b> A OMS considera pandemia global, com projeção de 1 em cada 4 pessoas com obesidade até 2035.</div>
+    `},
+    {h:"Epidemiologia — números que caem em prova", b:`
+      <table>
+        <tr><th>Esfera</th><th>Dado</th></tr>
+        <tr><td>🌍 Global 2025</td><td>~1 bilhão de adultos com obesidade (OMS)</td></tr>
+        <tr><td>🌍 Global 2035</td><td><b>~1,9 bilhão</b> com obesidade — 51% da população com sobrepeso/obesidade (World Obesity Atlas 2023)</td></tr>
+        <tr><td>🇧🇷 Adultos (VIGITEL 2023)</td><td>~22–24% obesidade nas capitais; ~57% sobrepeso</td></tr>
+        <tr><td>🇧🇷 Crianças/adolescentes</td><td>~7–10% obesidade (POF/SISVAN)</td></tr>
+      </table>
+      <div class="warn">🚨 <b>Ponto de Atenção:</b> decore a projeção de 2035 — <b>~1,9 bilhão / 1 em 4 pessoas</b>.</div>
+    `}
+  ],
+  quiz:[
+    {q:"A obesidade foi reconhecida como doença crônica por quais entidades, e em que anos?",
+     o:["OMS (1997) e AMA (2013)","Ministério da Saúde (2005) e CFM (2010)","IDF (2001) e SBC (2007)","OMS (2010) e AMA (2018)"],a:0,
+     e:"OMS reconheceu em 1997 e a American Medical Association em 2013. É doença crônica, recidivante e progressiva."},
+    {q:"Qual a projeção global de pessoas com obesidade para 2035?",
+     o:["~500 milhões","~1 bilhão","~1,9 bilhão (1 em cada 4 pessoas)","~3 bilhões"],a:2,
+     e:"World Obesity Atlas 2023: ~1,9 bilhão de pessoas com obesidade em 2035, cerca de 1 em cada 4."},
+    {q:"Segundo o VIGITEL, qual a prevalência aproximada de obesidade em adultos nas capitais brasileiras?",
+     o:["~8%","~22–24%","~40%","~55%"],a:1,
+     e:"VIGITEL 2023: obesidade ~22–24% nas capitais; sobrepeso ~57%."},
+    {q:"Qual característica NÃO faz parte da definição moderna de obesidade como doença?",
+     o:["Crônica","Recidivante","Progressiva","Transmissível"],a:3,
+     e:"Obesidade é crônica, recidivante e progressiva — não é transmissível (embora o ambiente obesogênico seja 'contagioso' socialmente)."},
+    {q:"Em relação à epidemiologia pediátrica brasileira, a prevalência de obesidade em crianças é aproximadamente:",
+     o:["1–2%","7–10%","20–25%","35%"],a:1,
+     e:"POF/SISVAN apontam ~7–10% de obesidade em crianças e adolescentes brasileiros."}
+  ]
+},
+{
+  id:2, icon:"📏", color:"#a78bfa", title:"Avaliação Diagnóstica e Antropometria", prio:"r",
+  sub:"IMC, CA, RCEst e novos critérios",
+  content:[
+    {h:"IMC — Fórmula e Classificação OMS (adultos)", b:`
+      <p style="text-align:center;font-size:16px;font-weight:900;color:#a5b4fc;margin:8px 0">IMC = Peso (kg) ÷ Altura² (m²)</p>
+      <table>
+        <tr><th>IMC (kg/m²)</th><th>Classificação</th><th>Risco de Doença</th></tr>
+        <tr><td>&lt; 18,5</td><td>Baixo peso</td><td>Baixo (outros riscos)</td></tr>
+        <tr><td>18,5 – 24,9</td><td>Eutrofia</td><td>Normal</td></tr>
+        <tr><td>25 – 29,9</td><td>Sobrepeso</td><td><b>Aumentado</b></td></tr>
+        <tr><td>30 – 34,9</td><td>Obesidade Grau I</td><td>Moderado</td></tr>
+        <tr><td>35 – 39,9</td><td>Obesidade Grau II</td><td>Grave</td></tr>
+        <tr><td>≥ 40</td><td>Obesidade Grau III</td><td>Muito grave</td></tr>
+      </table>
+    `},
+    {h:"Idosos (≥ 60 anos) e Pediatria", b:`
+      <h4>Idosos — Ministério da Saúde</h4>
+      <table>
+        <tr><th>IMC</th><th>Classificação</th></tr>
+        <tr><td>&lt; 22</td><td>Baixo peso</td></tr>
+        <tr><td><b>22 – 27</b></td><td><b>Eutrofia (adequado)</b></td></tr>
+        <tr><td>&gt; 27</td><td>Sobrepeso/Obesidade</td></tr>
+      </table>
+      <div class="warn">🚨 <b>Ponto de Atenção:</b> o ponto de corte do idoso <b>NÃO é o do adulto</b>. Eutrofia = <b>22 a 27</b>.</div>
+      <h4>Pediatria — Escore Z (OMS)</h4>
+      <table>
+        <tr><th>Faixa</th><th>Sobrepeso</th><th>Obesidade</th><th>Obesidade grave</th></tr>
+        <tr><td>0–5 anos</td><td>Z &gt; +2 e ≤ +3</td><td><b>Z &gt; +3</b></td><td>—</td></tr>
+        <tr><td>5–19 anos</td><td>Z &gt; +1 e ≤ +2</td><td><b>Z &gt; +2</b></td><td>Z &gt; +3</td></tr>
+      </table>
+    `},
+    {h:"Limitações do IMC — ponto a ponto", b:`
+      <ul>
+        <li>Não diferencia <b>massa magra de massa gorda</b> (atleta pode "ser obeso").</li>
+        <li>Não avalia <b>distribuição de gordura</b> (central vs. periférica).</li>
+        <li>Não reflete <b>saúde metabólica</b> (existe obeso metabolicamente saudável).</li>
+        <li><b>Superestima</b> em idosos (sarcopenia) e <b>subestima</b> em obesos sarcopênicos.</li>
+        <li>Não considera <b>etnia</b> (asiáticos têm risco com IMC menor).</li>
+        <li>Não avalia <b>edema, ascite ou gestação</b>.</li>
+      </ul>
+      <div class="err">❌ <b>Erro comum:</b> dizer que o IMC "diagnostica" obesidade. ✅ <b>Correto:</b> o IMC é ferramenta de <b>triagem</b>.</div>
+    `},
+    {h:"Circunferência Abdominal (CA)", b:`
+      <h4>Técnica correta — decore a sequência</h4>
+      <ul>
+        <li>Paciente <b>em pé</b>, pés juntos, peso distribuído.</li>
+        <li>Fita <b>paralela ao chão</b>.</li>
+        <li>Ponto: <b>ponto médio entre a última costela e a crista ilíaca</b>.</li>
+        <li>Aferir no <b>final da expiração</b>.</li>
+        <li>Fita justa, <b>sem comprimir</b> a pele.</li>
+      </ul>
+      <h4>Pontos de corte por etnia</h4>
+      <table>
+        <tr><th>Etnia</th><th>Homens (aumentado / muito aum.)</th><th>Mulheres (aumentado / muito aum.)</th></tr>
+        <tr><td>Europídeos (IDF)</td><td>≥ 94 / ≥ 102 cm</td><td>≥ 80 / ≥ 88 cm</td></tr>
+        <tr><td><b>Sul-americanos / Sul-asiáticos</b></td><td><b>≥ 90 cm</b></td><td><b>≥ 80 cm</b></td></tr>
+      </table>
+      <div class="warn">🚨 No Brasil usa-se o corte <b>sul-asiático</b> para síndrome metabólica: <b>H ≥ 90 / M ≥ 80</b>.</div>
+    `},
+    {h:"Relação Cintura-Estatura (RCEst)", b:`
+      <p><b>RCEst = CA (cm) ÷ Altura (cm)</b> — ponto de corte <b>≥ 0,5</b> para ambos os sexos.</p>
+      <ul>
+        <li>Ponto único para <b>ambos os sexos</b>.</li>
+        <li>Ajusta pela <b>altura</b>.</li>
+        <li>Melhor preditor de <b>risco cardiometabólico</b> que IMC e CA isolados.</li>
+        <li>Simples e prático.</li>
+      </ul>
+      <div class="gold">💎 "Qual a vantagem da RCEst sobre a CA?" → <b>Um único ponto de corte (≥0,5), ajusta pela altura e prediz melhor o risco cardiometabólico.</b></div>
+    `},
+    {h:"Novos Critérios — Obesidade Pré-clínica vs. Clínica", b:`
+      <table>
+        <tr><th></th><th>Pré-clínica</th><th>Clínica</th></tr>
+        <tr><td>Definição</td><td>Excesso de adiposidade <b>sem</b> disfunção orgânica</td><td>Excesso de adiposidade <b>+ disfunção orgânica</b> ou limitação funcional</td></tr>
+        <tr><td>Critério</td><td>Apenas gordura corporal aumentada</td><td>Dispneia, dor articular, DM2, HAS, SAOS...</td></tr>
+        <tr><td>Conduta</td><td>Prevenção e monitoramento</td><td>Tratamento ativo</td></tr>
+      </table>
+      <div class="warn">🚨 <b>Novidade que as bancas adoram.</b> Saiba dizer que nem todo obeso tem doença clínica — o conceito separa <b>risco</b> de <b>doença instalada</b>.</div>
+    `}
+  ],
+  quiz:[
+    {q:"Qual o IMC de eutrofia para idosos (≥ 60 anos) segundo o Ministério da Saúde?",
+     o:["18,5 – 24,9","20 – 25","22 – 27","25 – 30"],a:2,
+     e:"Idosos: < 22 baixo peso, 22–27 eutrofia, > 27 sobrepeso/obesidade. NÃO usar o corte do adulto!"},
+    {q:"Ponto de corte de circunferência abdominal para homens sul-americanos (IDF):",
+     o:["≥ 94 cm","≥ 102 cm","≥ 90 cm","≥ 88 cm"],a:2,
+     e:"Sul-americanos/sul-asiáticos: homens ≥ 90 cm e mulheres ≥ 80 cm. Europídeos: H ≥ 94 / M ≥ 80."},
+    {q:"Criança de 10 anos com Escore Z de IMC = +2,5. Diagnóstico?",
+     o:["Eutrofia","Sobrepeso","Obesidade","Obesidade grave"],a:2,
+     e:"5–19 anos: Z > +1 e ≤ +2 = sobrepeso; Z > +2 e ≤ +3 = obesidade; Z > +3 = obesidade grave."},
+    {q:"Qual é o ponto de corte da Relação Cintura-Estatura para risco cardiometabólico?",
+     o:["≥ 0,4","≥ 0,5","≥ 0,6","≥ 0,7"],a:1,
+     e:"RCEst ≥ 0,5 para ambos os sexos. Vantagem: ponto único, ajusta pela altura, melhor preditor de risco."},
+    {q:"Qual alternativa NÃO é uma limitação do IMC?",
+     o:["Não diferencia massa magra de massa gorda","Não avalia distribuição de gordura","Não é reprodutível entre observadores","Superestima em idosos por sarcopenia"],a:2,
+     e:"O IMC É reprodutível e de baixo custo — essa é uma VANTAGEM. As demais são limitações reais."},
+    {q:"Diferencie obesidade pré-clínica de obesidade clínica:",
+     o:["Pré-clínica tem IMC 25–30; clínica tem IMC > 30","Pré-clínica = excesso de gordura sem disfunção orgânica; clínica = com disfunção orgânica ou limitação funcional","Pré-clínica é em crianças; clínica é em adultos","São sinônimos"],a:1,
+     e:"O conceito separa risco (pré-clínica) de doença instalada (clínica) — independe do IMC isolado."},
+    {q:"Na aferição da circunferência abdominal, em que momento do ciclo respiratório se mede?",
+     o:["No pico da inspiração","No final da expiração","Durante apneia voluntária","Indiferente"],a:1,
+     e:"Final da expiração, fita paralela ao chão, no ponto médio entre última costela e crista ilíaca, sem comprimir."}
+  ]
+},
+{
+  id:3, icon:"🧬", color:"#fb923c", title:"Etiologia, Disruptores e Medicamentos", prio:"y",
+  sub:"Primária vs. secundária e iatrogenia",
+  content:[
+    {h:"Obesidade Primária vs. Secundária", b:`
+      <ul>
+        <li><b>Primária (multifatorial): ~95–97%</b> — genética + ambiente + comportamento.</li>
+        <li><b>Secundária: ~3–5%</b> — endócrina, genética, medicamentosa.</li>
+      </ul>
+      <table>
+        <tr><th>Causa</th><th>Pista clínica</th></tr>
+        <tr><td>Prader-Willi</td><td>Hipotonia neonatal, hiperfagia, hipogonadismo, deficiência intelectual</td></tr>
+        <tr><td>Bardet-Biedl</td><td>Distrofia retiniana, polidactilia, anomalias renais, obesidade</td></tr>
+        <tr><td>Mutação MC4R</td><td><b>Monogênica mais comum</b>; hiperfagia grave desde a infância</td></tr>
+        <tr><td>Cushing</td><td>Estrias violáceas, face em lua, HAS, hiperglicemia, fraqueza proximal</td></tr>
+      </table>
+    `},
+    {h:"Medicamentos que causam ganho de peso", b:`
+      <table>
+        <tr><th>Classe</th><th>Exemplos</th></tr>
+        <tr><td>Antidepressivos</td><td>Amitriptilina, Mirtazapina, Paroxetina</td></tr>
+        <tr><td>Antipsicóticos</td><td><b>Olanzapina, Clozapina</b>, Quetiapina, Risperidona</td></tr>
+        <tr><td>Anticonvulsivantes</td><td><b>Valproato</b>, Carbamazepina, Gabapentina, Pregabalina</td></tr>
+        <tr><td>Hipoglicemiantes</td><td><b>Insulina, Sulfonilureias</b>, Pioglitazona, Meglitinidas</td></tr>
+        <tr><td>Corticoides</td><td>Prednisona, Dexametasona</td></tr>
+      </table>
+      <div class="gold">💎 "Cite 3 classes que causam ganho de peso." → <b>Antipsicóticos (olanzapina), insulina/sulfonilureias e corticoides.</b> Brilhe: <b>mirtazapina e valproato</b>.</div>
+    `},
+    {h:"Disruptores Endócrinos e Microbiota", b:`
+      <ul>
+        <li><b>Disruptores endócrinos:</b> BPA, ftalatos, pesticidas — mimetizam/bloqueiam hormônios, aumentam <b>adipogênese</b>, geram resistência à insulina e alteram saciedade.</li>
+        <li><b>Microbiota intestinal:</b> <b>disbiose</b> → maior extração energética, inflamação de baixo grau e alteração de incretinas (GLP-1).</li>
+      </ul>
+    `}
+  ],
+  quiz:[
+    {q:"Qual é a causa monogênica mais comum de obesidade?",
+     o:["Mutação do gene MC4R","Síndrome de Prader-Willi","Síndrome de Bardet-Biedl","Mutação do gene da leptina"],a:0,
+     e:"Mutação MC4R é a monogênica mais comum, com hiperfagia grave desde a infância."},
+    {q:"Hipotonia neonatal, hiperfagia, hipogonadismo e deficiência intelectual sugerem:",
+     o:["Bardet-Biedl","Prader-Willi","Cushing","MC4R"],a:1,
+     e:"Tríade clássica de Prader-Willi: hipotonia neonatal, hiperfagia e hipogonadismo."},
+    {q:"Qual antipsicótico está mais associado a ganho de peso?",
+     o:["Haloperidol","Olanzapina","Aripiprazol","Ziprasidona"],a:1,
+     e:"Olanzapina e clozapina são os de maior risco metabólico entre os antipsicóticos."},
+    {q:"Qual combinação é típica de Bardet-Biedl?",
+     o:["Distrofia retiniana, polidactilia, anomalias renais e obesidade","Estrias violáceas e face em lua","Hipotonia neonatal e hipogonadismo","Hiperfagia e deficiência intelectual sem malformações"],a:0,
+     e:"Bardet-Biedl: distrofia retiniana, polidactilia, anomalias renais e obesidade."},
+    {q:"Aproximadamente qual a proporção de obesidade secundária?",
+     o:["~50%","~25%","~10%","~3–5%"],a:3,
+     e:"Obesidade primária (multifatorial) responde por ~95–97%; secundária por ~3–5%."},
+    {q:"Qual fármaco anticonvulsivante está classicamente associado a ganho de peso?",
+     o:["Topiramato","Valproato","Fenitoína","Lamotrigina"],a:1,
+     e:"Valproato (e gabapentina/pregabalina) causam ganho de peso. Topiramato, ao contrário, tende a reduzir."}
+  ]
+},
+{
+  id:4, icon:"🫀", color:"#f472b6", title:"Complicações Sistêmicas", prio:"y",
+  sub:"Mapeamento por sistemas",
+  content:[
+    {h:"Complicações por sistema", b:`
+      <table>
+        <tr><th>Sistema</th><th>Complicações</th></tr>
+        <tr><td>❤️ Cardiovascular</td><td>HAS, dislipidemia, aterosclerose, DAC, IAM, AVC, <b>ICFEP</b>, FA, TVP/TEP</td></tr>
+        <tr><td>🫁 Respiratório</td><td><b>SAOS</b>, síndrome de hipoventilação da obesidade, asma</td></tr>
+        <tr><td>🩸 Metabólico</td><td><b>DM2</b>, resistência insulínica, dislipidemia, <b>síndrome metabólica</b>, hiperuricemia</td></tr>
+        <tr><td>🫀 Hepático</td><td><b>MASLD/NAFLD</b> → NASH → cirrose → carcinoma hepatocelular</td></tr>
+        <tr><td>🧂 Renal</td><td>DRC, glomerulopatia da obesidade, nefrolitíase</td></tr>
+        <tr><td>🦴 Musculoesquelético</td><td><b>Osteoartrite de joelho</b>, gota, lombalgia</td></tr>
+        <tr><td>🧠 SNC</td><td>AVC, hipertensão intracraniana idiopática, depressão, declínio cognitivo</td></tr>
+        <tr><td>🧬 Reprodutivo</td><td><b>SOP</b>, infertilidade, hipogonadismo, disfunção sexual, complicações gestacionais</td></tr>
+        <tr><td>🎗️ Câncer</td><td><b>Endométrio, mama (pós-menopausa), colorretal</b>, esôfago, rim, pâncreas, fígado</td></tr>
+      </table>
+      <div class="gold">💎 "Qual o câncer mais associado à obesidade na mulher?" → <b>Endométrio</b>. No homem: <b>colorretal</b> (e esôfago).</div>
+      <div class="warn">🚨 <b>Queridinhos das bancas:</b> <b>ICFEP</b> e <b>SAOS</b>.</div>
+    `}
+  ],
+  quiz:[
+    {q:"Qual câncer ginecológico está mais fortemente associado à obesidade?",
+     o:["Câncer de ovário","Câncer de colo uterino","Câncer de endométrio","Câncer vulvar"],a:2,
+     e:"Endométrio é o mais associado. Na pós-menopausa, mama também tem risco aumentado."},
+    {q:"Qual é a complicação respiratória mais característica da obesidade?",
+     o:["DPOC","SAOS (apneia obstrutiva do sono)","Fibrose pulmonar","Pneumonia de repetição"],a:1,
+     e:"SAOS é a complicação respiratória clássica, além da síndrome de hipoventilação da obesidade."},
+    {q:"A esteatose hepática associada à obesidade é hoje denominada:",
+     o:["MASLD/NAFLD","Hepatite autoimune","Cirrose biliar primária","Hepatite alcoólica"],a:0,
+     e:"MASLD (antiga NAFLD) → pode evoluir para NASH, cirrose e carcinoma hepatocelular."},
+    {q:"Qual tipo de insuficiência cardíaca é classicamente associada à obesidade?",
+     o:["ICFER (fração de ejeção reduzida)","ICFEP (fração de ejeção preservada)","IC de alto débito por anemia","IC direita por cor pulmonale"],a:1,
+     e:"ICFEP é a forma típica em obesos, especialmente mulheres, com hipertrofia e disfunção diastólica."},
+    {q:"A obesidade está classicamente associada a qual distúrbio reprodutivo feminino?",
+     o:["Endometriose","SOP (síndrome dos ovários policísticos)","Insuficiência ovariana precoce","Miomatose"],a:1,
+     e:"SOP é fortemente associada — hiperandrogenismo, anovulação e resistência insulínica."},
+    {q:"Qual complicação musculoesquelética é mais frequente na obesidade?",
+     o:["Osteoporose","Osteoartrite de joelho","Escoliose idiopática","Fibromialgia"],a:1,
+     e:"Sobrecarga mecânica leva à osteoartrite, sobretudo de joelhos. Gota e lombalgia também são comuns."}
+  ]
+},
+{
+  id:5, icon:"🏃", color:"#34d399", title:"Tratamento Não Farmacológico", prio:"y",
+  sub:"Dieta, exercício e TCC",
+  content:[
+    {h:"Dieta", b:`
+      <ul>
+        <li><b>Déficit calórico: 500–1000 kcal/dia.</b></li>
+        <li><b>Meta: perder 5–10% do peso em 6 meses.</b></li>
+        <li><b>VLCD (Very Low Calorie Diet): &lt; 800 kcal/dia</b> — curto prazo, supervisionado.</li>
+      </ul>
+      <div class="gold">💎 "Qual a meta inicial de perda ponderal?" → <b>5–10% em 6 meses</b> — melhora HAS, glicemia e lipídios.</div>
+    `},
+    {h:"Exercício Físico", b:`
+      <table>
+        <tr><th>Tipo</th><th>Recomendação</th></tr>
+        <tr><td>Aeróbico</td><td><b>150–300 min/semana</b> moderado (ou 75–150 min vigoroso)</td></tr>
+        <tr><td>Resistido</td><td><b>2–3×/semana</b>, 2–3 séries de 8–12 repetições</td></tr>
+      </table>
+      <div class="warn">🚨 "Qual o mínimo de exercício aeróbico?" → <b>150 min/semana moderado</b>. Não confunda com 300 (perda adicional/manutenção).</div>
+    `},
+    {h:"Terapia Cognitivo-Comportamental (TCC)", b:`
+      <p>Objetivos: <b>automonitoramento</b>, controle de estímulos, resolução de problemas, prevenção de recaída e manejo de gatilhos emocionais.</p>
+    `}
+  ],
+  quiz:[
+    {q:"Qual o déficit calórico diário recomendado para perda de peso?",
+     o:["100–200 kcal","250–400 kcal","500–1000 kcal","1500–2000 kcal"],a:2,
+     e:"Déficit de 500–1000 kcal/dia, com meta de 5–10% do peso em 6 meses."},
+    {q:"Qual é a meta inicial de perda ponderal em 6 meses?",
+     o:["1–2%","5–10%","20–25%","30%"],a:1,
+     e:"5–10% em 6 meses é suficiente para melhorar HAS, glicemia e perfil lipídico."},
+    {q:"VLCD (Very Low Calorie Diet) é definida por:",
+     o:["< 1200 kcal/dia","< 1000 kcal/dia","< 800 kcal/dia","< 500 kcal/dia"],a:2,
+     e:"VLCD = < 800 kcal/dia, de curta duração e sob supervisão profissional."},
+    {q:"Qual a recomendação mínima de exercício aeróbico semanal?",
+     o:["75 min","150 min moderado","300 min","500 min"],a:1,
+     e:"150–300 min/semana de intensidade moderada (ou 75–150 vigoroso). 300 min é para perda adicional/manutenção."},
+    {q:"Qual a frequência recomendada de exercício resistido?",
+     o:["1×/semana","2–3×/semana","5×/semana","Diariamente"],a:1,
+     e:"2–3×/semana, 2–3 séries de 8–12 repetições por grupo muscular."},
+    {q:"Qual é um objetivo central da TCC no tratamento da obesidade?",
+     o:["Substituir a dieta por medicação","Automonitoramento e prevenção de recaída","Aumentar o gasto energético basal","Reduzir a absorção de gorduras"],a:1,
+     e:"TCC trabalha automonitoramento, controle de estímulos, resolução de problemas e prevenção de recaída."}
+  ]
+},
+{
+  id:6, icon:"💊", color:"#f87171", title:"Tratamento Farmacológico", prio:"r",
+  sub:"Sibutramina, orlistate, incretinas e Contrave",
+  content:[
+    {h:"Indicações Formais", b:`
+      <ul>
+        <li><b>IMC ≥ 30 kg/m²</b> (sem comorbidade), <b>OU</b></li>
+        <li><b>IMC ≥ 25 kg/m² + comorbidade</b> (HAS, DM2, dislipidemia, SAOS...).</li>
+      </ul>
+      <div class="err">❌ Farmacoterapia não é para estética. ✅ É tratamento de <b>doença</b>, com indicação formal por IMC + comorbidade.</div>
+    `},
+    {h:"Sibutramina", b:`
+      <ul>
+        <li><b>Mecanismo:</b> inibe recaptação de <b>serotonina e noradrenalina</b> (aumenta saciedade).</li>
+        <li><b>Receita: B2 (azul)</b> — notificação de receita.</li>
+        <li><b>Dose: 10–15 mg/dia</b> pela manhã.</li>
+      </ul>
+      <h4>Contraindicações — decore a lista</h4>
+      <ul>
+        <li><b>HAS não controlada</b></li>
+        <li><b>Doença arterial coronariana / IAM / AVC prévios</b></li>
+        <li><b>Arritmias / insuficiência cardíaca</b></li>
+        <li>Insuficiência hepática ou renal</li>
+        <li>Glaucoma</li>
+        <li>Feocromocitoma</li>
+        <li>Uso de IMAO</li>
+        <li>Transtornos psiquiátricos graves</li>
+      </ul>
+      <div class="warn">🚨 "HAS controlada pode usar sibutramina?" → <b>Sim, com cautela e monitoramento.</b> Mas se houver DAC/AVC/arritmia/IC → <b>contraindicação absoluta</b>, independentemente da pressão.</div>
+    `},
+    {h:"Orlistate", b:`
+      <ul>
+        <li><b>Mecanismo:</b> inibe <b>lipase pancreática</b> → reduz ~30% da absorção de gordura.</li>
+        <li><b>Posologia: 120 mg 3×/dia</b> com as refeições.</li>
+        <li><b>Efeitos colaterais:</b> esteatorreia, diarreia, urgência fecal, flatulência.</li>
+        <li><b>Monitoramento: vitaminas lipossolúveis A, D, E, K.</b></li>
+      </ul>
+      <div class="gold">💎 "Qual vitamina monitorar com orlistate?" → <b>A, D, E, K</b> — reduz absorção de gorduras e dessas vitaminas.</div>
+    `},
+    {h:"Incretinas", b:`
+      <table>
+        <tr><th>Fármaco</th><th>Mecanismo</th><th>Via/Posologia</th><th>Perda de peso</th></tr>
+        <tr><td>Liraglutida 3,0 mg</td><td>Agonista GLP-1</td><td>SC diário</td><td><b>~8%</b> (SCALE)</td></tr>
+        <tr><td>Semaglutida 2,4 mg</td><td>Agonista GLP-1</td><td>SC semanal</td><td><b>~15%</b> (STEP)</td></tr>
+        <tr><td>Tirzepatida</td><td><b>Duplo agonista GIP/GLP-1</b></td><td>SC semanal</td><td><b>~20%</b> (SURMOUNT-1)</td></tr>
+      </table>
+      <div class="warn">🚨 "Qual a diferença da tirzepatida?" → <b>É dupla (GIP + GLP-1)</b>, com maior perda ponderal (~20%).</div>
+    `},
+    {h:"Contrave, Off-label e TCAP", b:`
+      <h4>Contrave (Bupropiona + Naltrexona)</h4>
+      <ul>
+        <li><b>Mecanismo:</b> bupropiona (recaptação de dopamina/noradrenalina) + naltrexona (antagonista opioide) → reduz fome e compulsão.</li>
+        <li><b>Posologia:</b> iniciar 1 comp (8/90 mg) → titular até <b>2 comp (16/180 mg) 2×/dia</b> (máx. 4 comp/dia).</li>
+      </ul>
+      <h4>Off-label e TCAP</h4>
+      <ul>
+        <li><b>Topiramato</b> — anticonvulsivante, off-label para obesidade.</li>
+        <li><b>Lisdexanfetamina</b> — <b>receita A</b> (psicotrópico), uso em compulsão/obesidade.</li>
+      </ul>
+      <div class="gold">💎 "Qual a receita da sibutramina?" → <b>B2</b>. "E da lisdexanfetamina?" → <b>A</b>. Cai MUITO.</div>
+    `}
+  ],
+  quiz:[
+    {q:"Qual é a indicação formal de farmacoterapia para obesidade?",
+     o:["IMC ≥ 25 isoladamente","IMC ≥ 30 ou IMC ≥ 25 com comorbidade","IMC ≥ 35 apenas","IMC ≥ 40 apenas"],a:1,
+     e:"IMC ≥ 30 sem comorbidade OU IMC ≥ 25 com comorbidade associada (HAS, DM2, dislipidemia, SAOS...)."},
+    {q:"Qual o tipo de receita para sibutramina?",
+     o:["Receita simples (branca)","B1 (azul)","B2 (azul)","A (amarela)"],a:2,
+     e:"Sibutramina exige receita B2 (azul), com notificação de receita."},
+    {q:"Qual é a contraindicação cardiovascular ABSOLUTA à sibutramina?",
+     o:["HAS controlada","Doença arterial coronariana / AVC prévio / arritmia / IC","Dislipidemia isolada","Uso de estatinas"],a:1,
+     e:"DAC, AVC prévio, arritmias e insuficiência cardíaca são contraindicações absolutas. HAS não controlada também, mas HAS controlada permite uso com cautela."},
+    {q:"Quais vitaminas devem ser monitoradas no uso de orlistate?",
+     o:["B1, B6, B12","A, D, E, K","C e complexo B","Ferro e folato"],a:1,
+     e:"Orlistate reduz absorção de gorduras e vitaminas lipossolúveis A, D, E e K."},
+    {q:"Qual fármaco é um duplo agonista GIP/GLP-1 com ~20% de perda ponderal?",
+     o:["Liraglutida","Semaglutida","Tirzepatida","Orlistate"],a:2,
+     e:"Tirzepatida é dupla (GIP + GLP-1) — SURMOUNT-1 mostrou ~20% de perda."},
+    {q:"Qual a perda de peso média com semaglutida 2,4 mg (estudo STEP)?",
+     o:["~3%","~8%","~15%","~25%"],a:2,
+     e:"Semaglutida 2,4 mg: ~15% (STEP). Liraglutida 3,0 mg: ~8% (SCALE). Tirzepatida: ~20% (SURMOUNT-1)."},
+    {q:"Qual a composição do Contrave?",
+     o:["Bupropiona + Naltrexona","Bupropiona + Naltrexona + Topiramato","Fentermina + Topiramato","Sibutramina + Orlistate"],a:0,
+     e:"Contrave = bupropiona + naltrexona. Titulação até 2 comprimidos (16/180 mg) 2×/dia."},
+    {q:"Qual o mecanismo de ação do orlistate?",
+     o:["Inibe recaptação de serotonina","Inibe lipase pancreática","Agonista GLP-1","Antagonista opioide"],a:1,
+     e:"Orlistate inibe a lipase pancreática, reduzindo ~30% da absorção de gordura dietética."},
+    {q:"A lisdexanfetamina, quando usada para obesidade/compulsão, exige qual receita?",
+     o:["Receita branca simples","B2","A (amarela)","C1"],a:2,
+     e:"Lisdexanfetamina é psicotrópico — receita A (amarela)."}
+  ]
+},
+{
+  id:7, icon:"🔪", color:"#fbbf24", title:"Cirurgia Bariátrica", prio:"r",
+  sub:"Indicações, técnicas e dumping",
+  content:[
+    {h:"Indicações Formais", b:`
+      <table>
+        <tr><th>Grupo</th><th>Critérios</th></tr>
+        <tr><td>Adultos</td><td>IMC ≥ 40 <b>OU</b> IMC ≥ 35 + comorbidade; <b>falha de tratamento clínico por ≥ 2 anos</b>; idade 18–65 anos</td></tr>
+        <tr><td>Idosos (&gt; 65)</td><td>Individualizar; &gt; 70 com cautela</td></tr>
+        <tr><td>Adolescentes</td><td>IMC ≥ 35 + comorbidade grave <b>OU</b> IMC ≥ 40; maturidade esquelética</td></tr>
+      </table>
+      <div class="warn">🚨 O critério temporal de falha clínica é <b>2 anos</b>. Decore!</div>
+    `},
+    {h:"Contraindicações", b:`
+      <ul>
+        <li><b>Absolutas:</b> transtorno psiquiátrico grave não controlado, dependência de álcool/drogas, incapacidade de aderir ao seguimento, doença grave com risco cirúrgico proibitivo.</li>
+        <li><b>Relativas:</b> idade extrema, comorbidades graves, gestação.</li>
+      </ul>
+    `},
+    {h:"Comparativo das Técnicas", b:`
+      <table>
+        <tr><th>Técnica</th><th>Mecanismo</th><th>Perda de excesso de peso</th></tr>
+        <tr><td>Sleeve (Gastrectomia Vertical)</td><td><b>Restritivo</b></td><td><b>~70%</b></td></tr>
+        <tr><td>Bypass Gástrico em Y-de-Roux</td><td><b>Restritivo + disabsortivo</b></td><td><b>~70–80%</b></td></tr>
+      </table>
+      <div class="gold">💎 "Qual a diferença entre sleeve e bypass?" → <b>Sleeve é apenas restritivo; bypass é restritivo + disabsortivo (duplo mecanismo).</b></div>
+    `},
+    {h:"Complicações e Síndrome de Dumping", b:`
+      <ul>
+        <li><b>Precoces:</b> fístula, sangramento, TEP/TVP, estenose anastomótica.</li>
+        <li><b>Tardias:</b> <b>deficiências nutricionais (B12, ferro, folato, cálcio, vitaminas A/D/E/K)</b>, hérnia interna, úlcera marginal, reganho de peso.</li>
+      </ul>
+      <table>
+        <tr><th></th><th>Dumping Precoce</th><th>Dumping Tardio</th></tr>
+        <tr><td>Tempo</td><td>10–30 min após refeição</td><td>1–3 h após refeição</td></tr>
+        <tr><td>Mecanismo</td><td><b>Osmótico</b> (esvaziamento rápido)</td><td><b>Hipoglicemia reativa</b> (hiperinsulinismo)</td></tr>
+        <tr><td>Sintomas</td><td>Taquicardia, flushing, diarreia, sudorese, hipotensão</td><td>Hipoglicemia: tremor, sudorese, fome, confusão</td></tr>
+      </table>
+      <div class="warn">🚨 "Qual a diferença entre dumping precoce e tardio?" → <b>Tempo (10–30 min vs 1–3 h) e mecanismo (osmótico vs hipoglicemia reativa).</b></div>
+    `},
+    {h:"Critério de Sucesso Cirúrgico (5 anos)", b:`
+      <ul>
+        <li><b>Perda de excesso de peso (%EWL) &gt; 50%</b> após 5 anos.</li>
+        <li>Alternativamente: reganho &lt; 20–25% do peso perdido.</li>
+      </ul>
+    `}
+  ],
+  quiz:[
+    {q:"Qual o critério de IMC para cirurgia bariátrica em adultos com comorbidade?",
+     o:["IMC ≥ 30","IMC ≥ 35","IMC ≥ 40","IMC ≥ 45"],a:1,
+     e:"IMC ≥ 40 sem comorbidade OU IMC ≥ 35 com comorbidade, com falha de tratamento clínico por ≥ 2 anos."},
+    {q:"Por quanto tempo deve ter falhado o tratamento clínico antes da indicação cirúrgica?",
+     o:["6 meses","1 ano","2 anos","5 anos"],a:2,
+     e:"Falha de tratamento clínico supervisionado por pelo menos 2 anos."},
+    {q:"Qual o mecanismo do Sleeve (gastrectomia vertical)?",
+     o:["Apenas restritivo","Apenas disabsortivo","Restritivo + disabsortivo","Modulação hormonal isolada"],a:0,
+     e:"Sleeve é restritivo puro, com ~70% de perda de excesso de peso."},
+    {q:"Qual o mecanismo do Bypass Gástrico em Y-de-Roux?",
+     o:["Apenas restritivo","Restritivo + disabsortivo","Apenas disabsortivo","Puramente hormonal"],a:1,
+     e:"DGYR tem duplo mecanismo (restritivo + disabsortivo), com ~70–80% de perda de excesso de peso."},
+    {q:"Dumping precoce ocorre por qual mecanismo?",
+     o:["Hipoglicemia reativa","Efeito osmótico por esvaziamento rápido","Deficiência de B12","Refluxo biliar"],a:1,
+     e:"Dumping precoce: 10–30 min, mecanismo osmótico. Dumping tardio: 1–3 h, hipoglicemia reativa."},
+    {q:"Dumping tardio manifesta-se tipicamente como:",
+     o:["Diarreia osmótica","Hipoglicemia reativa com tremor e sudorese","Refluxo gastroesofágico","Síndrome disabsortiva grave"],a:1,
+     e:"Dumping tardio = hipoglicemia reativa por hiperinsulinismo, 1–3 h após a refeição."},
+    {q:"Qual é o critério de sucesso cirúrgico após 5 anos?",
+     o:["%EWL > 30%","%EWL > 50%","%EWL > 80%","IMC < 25"],a:1,
+     e:"Sucesso = perda de excesso de peso (%EWL) > 50% após 5 anos."},
+    {q:"Qual deficiência nutricional NÃO é típica do pós-operatório de bariátrica?",
+     o:["Vitamina B12","Ferro","Vitamina C","Cálcio e vitamina D"],a:2,
+     e:"B12, ferro, folato, cálcio e vitaminas A/D/E/K são as deficiências clássicas. Vitamina C (hidrossolúvel) não é típica."}
+  ]
+},
+{
+  id:8, icon:"🩸", color:"#60a5fa", title:"Síndrome Metabólica", prio:"r",
+  sub:"Critérios IDF/SBP",
+  content:[
+    {h:"Critérios IDF/SBP", b:`
+      <p><b>Critério OBRIGATÓRIO:</b> circunferência abdominal por etnia — <b>H ≥ 90 cm / M ≥ 80 cm</b> (sul-americanos).</p>
+      <p style="margin-top:8px"><b>+ 2 dos 4 critérios adicionais:</b></p>
+      <table>
+        <tr><th>Critério</th><th>Ponto de corte</th></tr>
+        <tr><td>Triglicerídeos</td><td>≥ 150 mg/dL (ou tratamento)</td></tr>
+        <tr><td>HDL</td><td>&lt; 40 mg/dL (H) / &lt; 50 mg/dL (M)</td></tr>
+        <tr><td>Pressão arterial</td><td>≥ 130/85 mmHg (ou tratamento)</td></tr>
+        <tr><td>Glicemia de jejum</td><td>≥ 100 mg/dL (ou DM2)</td></tr>
+      </table>
+      <div class="warn">🚨 <b>A CA é OBRIGATÓRIA!</b> Não basta ter 3 dos 4 sem a CA. ✅ <b>CA + 2 de 4.</b></div>
+      <div class="gold">💎 "Qual o critério obrigatório da SM?" → <b>Circunferência abdominal por etnia.</b> Sem CA, não fecha critério pela IDF.</div>
+    `}
+  ],
+  quiz:[
+    {q:"Qual é o critério obrigatório para diagnóstico de síndrome metabólica pela IDF?",
+     o:["Triglicerídeos ≥ 150","Glicemia ≥ 100","Circunferência abdominal por etnia","Pressão arterial ≥ 130/85"],a:2,
+     e:"A CA é obrigatória. Sem ela, não se fecha SM pela IDF, mesmo com os outros 4 critérios."},
+    {q:"Quantos critérios adicionais são necessários além da circunferência abdominal?",
+     o:["1","2","3","4"],a:1,
+     e:"CA obrigatória + pelo menos 2 dos 4 adicionais (TG, HDL, PA, glicemia)."},
+    {q:"Qual o ponto de corte de triglicerídeos na síndrome metabólica?",
+     o:["≥ 100 mg/dL","≥ 130 mg/dL","≥ 150 mg/dL","≥ 200 mg/dL"],a:2,
+     e:"TG ≥ 150 mg/dL (ou em tratamento específico)."},
+    {q:"Qual o ponto de corte de HDL para mulheres?",
+     o:["< 30 mg/dL","< 40 mg/dL","< 50 mg/dL","< 60 mg/dL"],a:2,
+     e:"HDL < 50 mg/dL em mulheres e < 40 mg/dL em homens."},
+    {q:"Qual o ponto de corte de pressão arterial na síndrome metabólica?",
+     o:["≥ 120/80","≥ 130/85","≥ 140/90","≥ 160/100"],a:1,
+     e:"PA ≥ 130/85 mmHg (ou uso de anti-hipertensivo)."},
+    {q:"Mulher de 52 anos: CA 88 cm, TG 180, HDL 45, PA 135/85, glicemia 105. Fecha síndrome metabólica?",
+     o:["Não, pois o HDL está normal","Não, pois falta um critério","Sim, CA + 3 critérios adicionais","Sim, mas apenas se a glicemia fosse ≥ 126"],a:2,
+     e:"CA ≥ 80 cm + TG ≥ 150 + PA ≥ 130/85 + glicemia ≥ 100 = CA + 3 critérios. Fecha SM."}
+  ]
+}
+];
+
+const PEGADINHAS = [
+{q:"O IMC é suficiente para diagnosticar obesidade?",
+ a:"Não. O IMC é ferramenta de triagem e não diagnostica isoladamente porque não diferencia massa magra de massa gorda, não avalia distribuição de gordura, não reflete saúde metabólica e não considera etnia. O diagnóstico integra IMC + circunferência abdominal + avaliação clínica e metabólica."},
+{q:"Qual o critério obrigatório da síndrome metabólica?",
+ a:"A circunferência abdominal elevada por etnia — para sul-americanos, homens ≥ 90 cm e mulheres ≥ 80 cm — associada a pelo menos 2 dos 4 critérios adicionais: TG ≥ 150, HDL baixo, PA ≥ 130/85 e glicemia ≥ 100."},
+{q:"Paciente com HAS controlada pode usar sibutramina?",
+ a:"A contraindicação absoluta é a hipertensão NÃO controlada. Com HAS controlada, pode-se usar com cautela e monitoramento. Porém, se houver DAC, AVC prévio, arritmia ou insuficiência cardíaca, é contraindicação absoluta independentemente da pressão."},
+{q:"Qual a diferença entre dumping precoce e tardio?",
+ a:"O precoce ocorre 10–30 minutos após a refeição, por mecanismo osmótico (esvaziamento rápido), com taquicardia, flushing, diarreia e sudorese. O tardio ocorre 1–3 horas após, por hipoglicemia reativa (hiperinsulinismo), com tremor, sudorese, fome e confusão."},
+{q:"Qual o critério de sucesso da cirurgia bariátrica após 5 anos?",
+ a:"Perda de excesso de peso (%EWL) maior que 50% após 5 anos. Alternativamente, reganho inferior a 20–25% do peso perdido."}
+];
+
+const CASOS = [
+{t:"Caso 1 — Indicação farmacológica vs. contraindicação de sibutramina",
+ c:"Mulher, 38 anos, IMC 32 kg/m², HAS <b>não controlada</b>, sem outras comorbidades.",
+ p:"Qual a conduta farmacológica?",
+ a:"Há indicação de farmacoterapia (IMC ≥ 30). Porém, a <b>sibutramina é CONTRAINDICADA por HAS não controlada</b>. Optar por orlistate ou incretina (liraglutida/semaglutida), associada a dieta e exercício."},
+{t:"Caso 2 — Candidato à cirurgia bariátrica",
+ c:"Homem, 45 anos, IMC 37 kg/m², DM2, falha de tratamento clínico por 3 anos.",
+ p:"Tem indicação de bariátrica?",
+ a:"<b>Sim.</b> IMC ≥ 35 com comorbidade (DM2) e falha de tratamento clínico por ≥ 2 anos. Idade dentro da faixa (18–65). Avaliar contraindicações psiquiátricas e risco cirúrgico."},
+{t:"Caso 3 — Diagnóstico de síndrome metabólica",
+ c:"Mulher, 52 anos, CA 88 cm, TG 180 mg/dL, HDL 45 mg/dL, PA 135/85 mmHg, glicemia 105 mg/dL.",
+ p:"Fecha síndrome metabólica?",
+ a:"<b>Sim.</b> CA ≥ 80 cm (obrigatório) + TG ≥ 150 + PA ≥ 130/85 + glicemia ≥ 100 = pelo menos 2 adicionais. Diagnóstico de síndrome metabólica pela IDF."}
+];
+
+const CHEATSHEET = [
+["IMC adulto","25 sobrepeso · 30 ob I · 35 ob II · 40 ob III"],
+["IMC idoso (≥60a)","Eutrofia <b>22–27</b>"],
+["Escore Z 0–5 anos","Z &gt; +3 = obesidade"],
+["Escore Z 5–19 anos","Z &gt; +2 = obesidade · Z &gt; +3 = grave"],
+["CA sul-americano","<b>H ≥ 90 / M ≥ 80 cm</b>"],
+["CA europídeo","H ≥ 94 / M ≥ 80 cm"],
+["RCEst","<b>≥ 0,5</b>"],
+["Déficit calórico","<b>500–1000 kcal/dia</b>"],
+["Meta 6 meses","<b>5–10%</b> do peso"],
+["VLCD","&lt; 800 kcal/dia"],
+["Aeróbico","150–300 min/semana"],
+["Resistido","2–3×/semana, 8–12 rep"],
+["Sibutramina","<b>B2</b> · 10–15 mg · CI: DAC/AVC/arritmia/IC/HAS não controlada"],
+["Orlistate","120 mg 3×/dia · vitaminas <b>A, D, E, K</b>"],
+["Liraglutida 3,0","~8% · SC diário"],
+["Semaglutida 2,4","~15% · SC semanal"],
+["Tirzepatida","~20% · <b>GIP + GLP-1</b> · SC semanal"],
+["Contrave","Bupropiona + Naltrexona · 2 comp 2×/dia"],
+["Lisdexanfetamina","Receita <b>A</b>"],
+["Bariátrica (adulto)","IMC ≥ 40 ou ≥ 35 + comorbidade · falha clínica <b>2 anos</b>"],
+["Sleeve","Restritivo · ~70% EWL"],
+["Bypass (DGYR)","Restritivo + disabsortivo · ~70–80% EWL"],
+["Sucesso cirúrgico 5a","%EWL &gt; 50%"],
+["Dumping precoce","10–30 min · osmótico"],
+["Dumping tardio","1–3 h · hipoglicemia reativa"],
+["Síndrome metabólica","<b>CA obrigatória</b> + 2 de 4"],
+["SM — TG","≥ 150 mg/dL"],
+["SM — HDL","&lt; 40 (H) / &lt; 50 (M) mg/dL"],
+["SM — PA","≥ 130/85 mmHg"],
+["SM — Glicemia","≥ 100 mg/dL"]
+];
+
+const FLASHCARDS = [
+["IMC de eutrofia no idoso?","22 – 27 kg/m²"],
+["Ponto de corte da CA para homem sul-americano?","≥ 90 cm (mulher ≥ 80 cm)"],
+["Ponto de corte da RCEst?","≥ 0,5"],
+["Déficit calórico recomendado?","500 – 1000 kcal/dia"],
+["Meta de perda ponderal em 6 meses?","5 – 10% do peso"],
+["Definição de VLCD?","< 800 kcal/dia"],
+["Mínimo de exercício aeróbico semanal?","150 min moderado (até 300)"],
+["Receita da sibutramina?","B2 (azul)"],
+["Receita da lisdexanfetamina?","A (amarela)"],
+["Vitaminas a monitorar com orlistate?","A, D, E e K"],
+["Perda de peso com semaglutida 2,4 mg?","~15% (STEP)"],
+["Perda de peso com tirzepatida?","~20% (SURMOUNT-1)"],
+["Mecanismo da tirzepatida?","Duplo agonista GIP/GLP-1"],
+["Composição do Contrave?","Bupropiona + Naltrexona"],
+["Mecanismo do orlistate?","Inibe lipase pancreática"],
+["Indicação de bariátrica em adultos?","IMC ≥ 40 ou ≥ 35 + comorbidade; falha clínica ≥ 2 anos"],
+["Mecanismo do sleeve?","Apenas restritivo (~70% EWL)"],
+["Mecanismo do bypass?","Restritivo + disabsortivo (~70–80% EWL)"],
+["Mecanismo do dumping precoce?","Osmótico (10–30 min)"],
+["Mecanismo do dumping tardio?","Hipoglicemia reativa (1–3 h)"],
+["Critério de sucesso bariátrico em 5 anos?","%EWL > 50%"],
+["Critério obrigatório da síndrome metabólica?","Circunferência abdominal por etnia"],
+["Corte de TG na SM?","≥ 150 mg/dL"],
+["Corte de HDL na SM?","< 40 (H) / < 50 (M) mg/dL"],
+["Corte de PA na SM?","≥ 130/85 mmHg"],
+["Corte de glicemia na SM?","≥ 100 mg/dL"],
+["Causa monogênica mais comum de obesidade?","Mutação MC4R"],
+["Câncer mais associado à obesidade na mulher?","Endométrio"],
+["Complicação respiratória clássica?","SAOS"],
+["Limitação central do IMC?","Não diferencia massa magra de massa gorda"]
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   ESTADO
+   ═══════════════════════════════════════════════════════════════ */
+
+const KEY = "obesidade_sm_plataforma_v1";
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {xp:0, answers:{}, contentRead:{}, fcIndex:0, revealed:{}, streak:0};
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+function totalQuestions(){ return MISSIONS.reduce((a,m)=>a+m.quiz.length,0); }
+function correctCount(){ return Object.values(S.answers).filter(a=>a.ok).length; }
+function answeredCount(){ return Object.keys(S.answers).length; }
+function missionAnswered(m){ return m.quiz.filter((_,i)=>S.answers[m.id+"-"+i]).length; }
+function missionCorrect(m){ return m.quiz.filter((_,i)=>S.answers[m.id+"-"+i] && S.answers[m.id+"-"+i].ok).length; }
+function missionDone(m){ return missionAnswered(m) === m.quiz.length; }
+
+function computeXP(){
+  let xp = 0;
+  MISSIONS.forEach(m=>{
+    m.quiz.forEach((_,i)=>{ const a=S.answers[m.id+"-"+i]; if(a && a.ok) xp += 10; });
+    if(missionDone(m)) xp += 20;
+  });
+  return xp;
+}
+function maxXP(){
+  let xp=0; MISSIONS.forEach(m=>{ xp += m.quiz.length*10 + 20; }); return xp;
+}
+function level(){ return Math.floor(computeXP()/100) + 1; }
+function levelProgress(){
+  const xp = computeXP() % 100; return xp;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+
+function toast(msg){
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add("show"));
+  setTimeout(()=>{ t.classList.remove("show"); setTimeout(()=>t.remove(),450); }, 1900);
+}
+
+function confetti(n=70){
+  const cols = ["#22d3ee","#a78bfa","#f472b6","#34d399","#fbbf24","#f87171","#60a5fa"];
+  for(let i=0;i<n;i++){
+    const d = document.createElement("div");
+    d.className = "confetti";
+    d.style.left = Math.random()*100 + "vw";
+    d.style.background = cols[Math.floor(Math.random()*cols.length)];
+    d.style.animationDelay = (Math.random()*0.35)+"s";
+    d.style.animationDuration = (1.7 + Math.random()*1.3)+"s";
+    d.style.width = (6+Math.random()*7)+"px";
+    d.style.height = (9+Math.random()*9)+"px";
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(), 3400);
+  }
+}
+
+function header(){
+  const xp = computeXP(), mx = maxXP();
+  return `
+  <div class="topbar"><div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> OBESIDADE &amp; SM</div>
+    <div class="xpwrap">
+      <div class="xpmeta"><span>XP ${xp} / ${mx}</span><span>${Math.round(xp/mx*100)}%</span></div>
+      <div class="xpbar"><div class="xpfill" style="width:${xp/mx*100}%"></div></div>
+    </div>
+    <div class="lvl">🏆 Nível ${level()}</div>
+  </div></div>`;
+}
+
+function nav(backLabel, backFn){
+  if(!backLabel) return "";
+  return `<div class="back"><button class="btn ghost sm" onclick="${backFn}">← ${backLabel}</button></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TELAS
+   ═══════════════════════════════════════════════════════════════ */
+
+let view = {name:"home"};
+
+function render(){
+  const app = document.getElementById("app");
+  let html = header();
+
+  if(view.name === "home") html += homeHTML();
+  else if(view.name === "mission") html += missionHTML(view.id, view.tab || "content");
+  else if(view.name === "bonus") html += bonusHTML();
+  else if(view.name === "cheatsheet") html += cheatsheetHTML();
+  else if(view.name === "flashcards") html += flashcardsHTML();
+  else if(view.name === "simulado") html += simuladoHTML();
+
+  app.innerHTML = html;
+  window.scrollTo({top:0,behavior:"instant"});
+
+  // restore active quiz state
+  if(view.name === "mission") hydrateQuiz(view.id);
+}
+
+/* ---------- HOME ---------- */
+function homeHTML(){
+  const xp = computeXP(), mx = maxXP();
+  const done = MISSIONS.filter(missionDone).length;
+  return `
+  <div class="hero">
+    <h1>⚡ Missões de Estudo</h1>
+    <p>Plataforma gamificada para a prova oral de Obesidade e Síndrome Metabólica</p>
+    <div class="pillrow">
+      <span class="pill r">🔴 Alta prioridade</span>
+      <span class="pill y">🟡 Média prioridade</span>
+      <span class="pill g">🟢 Baixa prioridade</span>
+    </div>
+  </div>
+
+  <div class="card" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.6px">SEU PROGRESSO</div>
+      <div style="font-size:22px;font-weight:900;margin-top:3px">${done} / ${MISSIONS.length} missões concluídas</div>
+      <div class="small" style="margin-top:3px">${correctCount()} acertos de ${answeredCount()} respondidas · ${totalQuestions()} questões no total</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:26px;font-weight:900;background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent">${xp} XP</div>
+      <div class="small">de ${mx} possíveis</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    ${MISSIONS.map(m=>{
+      const ans = missionAnswered(m), tot = m.quiz.length;
+      const pct = Math.round(ans/tot*100);
+      const isDone = missionDone(m);
+      const prioIcon = m.prio==="r" ? "🔴" : m.prio==="y" ? "🟡" : "🟢";
+      return `
+      <div class="mission ${isDone?'done':''}" style="--mc:${m.color}" onclick="go('mission',${m.id})">
+        <div class="checkmark">✅</div>
+        <div class="mission-top">
+          <div class="m-icon">${m.icon}</div>
+          <div>
+            <div class="m-num">MISSÃO ${m.id} ${prioIcon}</div>
+            <div class="m-title">${m.title}</div>
+          </div>
+        </div>
+        <div class="small">${m.sub}</div>
+        <div class="m-prog">
+          <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+          <div class="m-meta"><span>${ans}/${tot} questões</span><span>${m.quiz.length*10+20} XP</span></div>
+        </div>
+      </div>`;
+    }).join("")}
+  </div>
+
+  <h3 style="margin:26px 0 12px;font-size:15px">🎁 Modos de Treino</h3>
+  <div class="grid">
+    <div class="mission" style="--mc:#fbbf24" onclick="go('bonus')">
+      <div class="mission-top"><div class="m-icon">🔥</div>
+        <div><div class="m-num">BÔNUS</div><div class="m-title">Pegadinhas &amp; Casos Clínicos</div></div></div>
+      <div class="small">5 pegadinhas de banca + 3 casos de fixação</div>
+    </div>
+    <div class="mission" style="--mc:#22d3ee" onclick="go('flashcards')">
+      <div class="mission-top"><div class="m-icon">🃏</div>
+        <div><div class="m-num">MEMORIZAÇÃO</div><div class="m-title">Flashcards Rápidos</div></div></div>
+      <div class="small">Números, doses e pontos de corte</div>
+    </div>
+    <div class="mission" style="--mc:#f472b6" onclick="go('cheatsheet')">
+      <div class="mission-top"><div class="m-icon">📋</div>
+        <div><div class="m-num">CONSULTA</div><div class="m-title">Cartão de Bolso</div></div></div>
+      <div class="small">Cheatsheet pesquisável de última hora</div>
+    </div>
+    <div class="mission" style="--mc:#a78bfa" onclick="go('simulado')">
+      <div class="mission-top"><div class="m-icon">🎯</div>
+        <div><div class="m-num">SIMULADO</div><div class="m-title">Modo Prova Oral</div></div></div>
+      <div class="small">5 questões aleatórias · cronômetro · sem dicas</div>
+    </div>
+  </div>
+
+  <div class="gold" style="margin-top:22px">
+    💎 <b>Dica de última hora:</b> durma bem. A memória consolida no sono — revisar o cheatsheet 20 min antes da prova vale mais que 3 h de madrugada.
+  </div>
+
+  <div style="text-align:center;margin-top:22px">
+    <button class="btn ghost sm" onclick="resetAll()">🔄 Zerar progresso</button>
+  </div>
+  `;
+}
+
+/* ---------- MISSION ---------- */
+function missionHTML(id, tab){
+  const m = MISSIONS.find(x=>x.id===id);
+  const prioLabel = m.prio==="r" ? "🔴 Alta prioridade" : m.prio==="y" ? "🟡 Média prioridade" : "🟢 Baixa prioridade";
+  let body = "";
+
+  if(tab === "content"){
+    body = m.content.map(b=>`
+      <div class="card">
+        <h3>📖 ${b.h}</h3>
+        ${b.b}
+      </div>`).join("");
+  } else if(tab === "quiz"){
+    body = `<div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div><b>${missionCorrect(m)} acertos</b> de ${m.quiz.length} questões</div>
+      <div class="progress-dots">
+        ${m.quiz.map((_,i)=>{
+          const a = S.answers[m.id+"-"+i];
+          return `<div class="pd ${a?(a.ok?'ok':'no'):''}"></div>`;
+        }).join("")}
+      </div>
+    </div>` + m.quiz.map((q,i)=>quizHTML(m, q, i)).join("");
+    if(missionDone(m)){
+      body += `<div class="ok" style="text-align:center;font-size:14px">
+        🎉 <b>Missão concluída!</b> Você respondeu todas as ${m.quiz.length} questões.
+        ${missionCorrect(m)===m.quiz.length ? "Perfeito! 100% de acerto. 🏅" : "Revise as que errou e tente novamente no simulado."}
+      </div>`;
+    }
+  } else {
+    body = `<div class="card">
+      <h3>💎 Dicas de Ouro — como o examinador cobra</h3>
+      ${m.content.map(b=>`<div style="margin-bottom:12px">${(b.b.match(/<div class="(gold|warn|err|ok)">[\s\S]*?<\/div>/g)||[]).join("")}</div>`).join("")}
+      <div class="gold">🧠 <b>Estratégia oral:</b> responda sempre na ordem <b>definição → critério → conduta</b>. Se travar, diga em voz alta: "o examinador quer que eu diferencie X de Y".</div>
+    </div>`;
+  }
+
+  return `
+  ${nav("Voltar ao mapa", "go('home')")}
+  <div class="mission-head" style="--mc:${m.color}">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:30px">${m.icon}</div>
+      <div>
+        <h2>Missão ${m.id} — ${m.title}</h2>
+        <p>${m.sub} · ${prioLabel}</p>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab ${tab==='content'?'on':''}" onclick="go('mission',${m.id},'content')">📖 Conteúdo</div>
+    <div class="tab ${tab==='quiz'?'on':''}" onclick="go('mission',${m.id},'quiz')">🎯 Quiz (${m.quiz.length})</div>
+    <div class="tab ${tab==='tips'?'on':''}" onclick="go('mission',${m.id},'tips')">💎 Dicas</div>
+  </div>
+  ${body}`;
+}
+
+function quizHTML(m, q, i){
+  const key = m.id + "-" + i;
+  const a = S.answers[key];
+  const letters = ["A","B","C","D","E"];
+  let opts = q.o.map((o,oi)=>{
+    let cls = "";
+    if(a){
+      if(oi === q.a) cls = "correct";
+      else if(oi === a.choice) cls = "wrong";
+      else cls = "dim";
+    }
+    return `<button class="opt ${cls}" ${a?'disabled':''} onclick="answer(${m.id},${i},${oi})">
+      <span class="ltr">${letters[oi]}</span><span>${o}</span>
+    </button>`;
+  }).join("");
+
+  return `
+  <div class="qbox" id="q-${key}">
+    <div class="qhead">
+      <span class="qnum">Q ${i+1}/${m.quiz.length}</span>
+      <span class="qtext">${q.q}</span>
+    </div>
+    <div class="opts">${opts}</div>
+    ${a ? `<div class="explain ${a.ok?'gold':''}">
+      ${a.ok ? "✅ <b>Correto!</b> +10 XP" : "❌ <b>Incorreto.</b> A resposta correta é <b>"+letters[q.a]+"</b>."}
+      <br>${q.e}
+    </div>` : ""}
+  </div>`;
+}
+
+function hydrateQuiz(){ /* nothing extra needed — rendered server-side */ }
+
+function answer(mid, qi, choice){
+  const m = MISSIONS.find(x=>x.id===mid);
+  const key = mid + "-" + qi;
+  if(S.answers[key]) return;
+  const ok = choice === m.quiz[qi].a;
+  S.answers[key] = {ok, choice};
+  const wasDone = missionDone(m);
+  save();
+  render();
+  if(ok) toast("+10 XP ✅");
+  else toast("Resposta correta revelada ❌");
+  if(!wasDone && missionDone(m)){
+    setTimeout(()=>{ confetti(110); toast("🎉 Missão concluída! +20 XP"); }, 260);
+  }
+}
+
+/* ---------- BONUS ---------- */
+function bonusHTML(){
+  return `
+  ${nav("Voltar ao mapa", "go('home')")}
+  <div class="hero" style="padding:10px 0 18px">
+    <h1 style="font-size:26px">🔥 Bônus de Prova Oral</h1>
+    <p>Pegadinhas que a banca adora + casos de fixação</p>
+  </div>
+
+  <div class="card"><h3>❓ 5 Perguntas "Pegadinha" com Resposta Padrão-Ouro</h3>
+    <p class="small" style="margin-bottom:12px">Tente responder em voz alta ANTES de abrir. Isso simula a prova real.</p>
+  </div>
+  ${PEGADINHAS.map((p,i)=>`
+    <div class="acc" id="acc-${i}">
+      <div class="acc-h" onclick="toggleAcc(${i})">
+        <span style="color:var(--yellow);font-weight:900">${i+1}</span>
+        <span>${p.q}</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="acc-b">
+        <div class="ok" style="margin:0">✅ <b>Resposta padrão-ouro:</b><br>${p.a}</div>
+      </div>
+    </div>`).join("")}
+
+  <h3 style="margin:26px 0 12px;font-size:15px">🏥 3 Casos Clínicos de Fixação</h3>
+  ${CASOS.map((c,i)=>`
+    <div class="acc" id="caso-${i}">
+      <div class="acc-h" onclick="toggleCaso(${i})">
+        <span style="font-size:17px">🩺</span>
+        <span>${c.t}</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="acc-b">
+        <div class="card" style="margin:0 0 10px;background:rgba(255,255,255,.03)">
+          <p>${c.c}</p>
+          <p style="margin-top:10px;color:var(--cyan);font-weight:800">${c.p}</p>
+        </div>
+        <div class="ok" style="margin:0">✅ ${c.a}</div>
+      </div>
+    </div>`).join("")}
+  `;
+}
+
+function toggleAcc(i){
+  document.getElementById("acc-"+i).classList.toggle("open");
+}
+function toggleCaso(i){
+  document.getElementById("caso-"+i).classList.toggle("open");
+}
+
+/* ---------- CHEATSHEET ---------- */
+let csQuery = "";
+function cheatsheetHTML(){
+  const rows = CHEATSHEET.filter(([k,v])=>
+    (k+" "+v).toLowerCase().includes(csQuery.toLowerCase())
+  );
+  return `
+  ${nav("Voltar ao mapa", "go('home')")}
+  <div class="hero" style="padding:10px 0 18px">
+    <h1 style="font-size:26px">📋 Cartão de Bolso</h1>
+    <p>Números, doses e pontos de corte — revise 20 min antes da prova</p>
+  </div>
+  <input class="search" id="csSearch" placeholder="🔍 Buscar (ex: sibutramina, CA, dumping...)" value="${csQuery}"
+    oninput="csQuery=this.value; document.getElementById('csList').innerHTML=csListHTML()">
+  <div id="csList">${csListHTML()}</div>
+  `;
+}
+function csListHTML(){
+  const rows = CHEATSHEET.filter(([k,v])=>
+    (k+" "+v).toLowerCase().includes(csQuery.toLowerCase())
+  );
+  if(!rows.length) return `<div class="card" style="text-align:center;color:var(--muted)">Nada encontrado 🤔</div>`;
+  return rows.map(([k,v])=>`<div class="cs-row"><div class="cs-k">${k}</div><div class="cs-v">${v}</div></div>`).join("");
+}
+
+/* ---------- FLASHCARDS ---------- */
+let fcDeck = null, fcPos = 0, fcFlipped = false;
+
+function flashcardsHTML(){
+  if(!fcDeck){ fcDeck = shuffle([...Array(FLASHCARDS.length).keys()]); fcPos = 0; }
+  const idx = fcDeck[fcPos];
+  const [q,a] = FLASHCARDS[idx];
+  return `
+  ${nav("Voltar ao mapa", "go('home')")}
+  <div class="hero" style="padding:10px 0 18px">
+    <h1 style="font-size:26px">🃏 Flashcards</h1>
+    <p>Clique no cartão para virar · ${fcPos+1} de ${fcDeck.length}</p>
+  </div>
+  <div class="fc ${fcFlipped?'flip':''}" onclick="flipCard()">
+    <div class="fc-inner">
+      <div class="fc-face fc-front">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;margin-bottom:12px">PERGUNTA</div>
+        <div class="fc-q">${q}</div>
+        <div class="fc-hint">👆 CLIQUE PARA REVELAR</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div style="font-size:11px;color:var(--green);font-weight:800;letter-spacing:1px;margin-bottom:12px">RESPOSTA</div>
+        <div class="fc-a">${a}</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;margin-top:6px">
+    <button class="btn" onclick="prevCard()">← Anterior</button>
+    <button class="btn primary" onclick="nextCard()">Próximo →</button>
+  </div>
+  <div class="gold" style="margin-top:20px">
+    💡 <b>Método de estudo:</b> se errar, não vire imediatamente — tente lembrar em voz alta por 5 segundos. O esforço de recuperação é o que consolida a memória.
+  </div>
+  `;
+}
+function flipCard(){ fcFlipped = !fcFlipped; render(); }
+function nextCard(){ fcPos = (fcPos+1) % fcDeck.length; fcFlipped = false; render(); }
+function prevCard(){ fcPos = (fcPos-1+fcDeck.length) % fcDeck.length; fcFlipped = false; render(); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- SIMULADO ---------- */
+let sim = null, simTimer = null;
+
+function buildSim(){
+  const pool = [];
+  MISSIONS.forEach(m=>m.quiz.forEach((q,i)=>pool.push({m,q,i})));
+  shuffle(pool);
+  return {
+    qs: pool.slice(0,5),
+    answers: {},
+    submitted: false,
+    timeLeft: 600
+  };
+}
+
+function simuladoHTML(){
+  if(!sim){ sim = buildSim(); startTimer(); }
+  const t = sim.timeLeft;
+  const mm = String(Math.floor(t/60)).padStart(2,"0");
+  const ss = String(t%60).padStart(2,"0");
+  const letters = ["A","B","C","D","E"];
+
+  if(sim.submitted){
+    const correct = sim.qs.filter((x,i)=> sim.answers[i] === x.q.a).length;
+    return `
+    ${nav("Voltar ao mapa", "go('home')")}
+    <div class="hero" style="padding:10px 0 18px">
+      <h1 style="font-size:26px">🎯 Resultado do Simulado</h1>
+    </div>
+    <div class="card" style="text-align:center;padding:28px">
+      <div style="font-size:52px;font-weight:900;background:linear-gradient(90deg,#22d3ee,#34d399);-webkit-background-clip:text;background-clip:text;color:transparent">${correct}/5</div>
+      <p style="margin-top:8px">${correct===5?"🏆 Perfeito! Você está pronto para o 10/10.":correct>=3?"💪 Bom desempenho — revise as que errou.":"📚 Revise as missões com calma antes da prova."}</p>
+    </div>
+    ${sim.qs.map((x,i)=>{
+      const chosen = sim.answers[i];
+      const ok = chosen === x.q.a;
+      return `<div class="qbox">
+        <div class="qhead">
+          <span class="qnum" style="background:${ok?'rgba(52,211,153,.2)':'rgba(248,113,113,.2)'};color:${ok?'#6ee7b7':'#fca5a5'};border-color:${ok?'#34d399':'#f87171'}">${ok?'✔':'✘'} Q${i+1}</span>
+          <span class="qtext">${x.q.q}</span>
+        </div>
+        <div class="opts">
+          ${x.q.o.map((o,oi)=>{
+            let cls = "";
+            if(oi===x.q.a) cls="correct";
+            else if(oi===chosen) cls="wrong";
+            else cls="dim";
+            return `<div class="opt ${cls}" style="cursor:default"><span class="ltr">${letters[oi]}</span><span>${o}</span></div>`;
+          }).join("")}
+        </div>
+        <div class="explain ${ok?'gold':''}">${ok?"✅ <b>Correto!</b>":"❌ <b>Incorreto.</b>"}<br>${x.q.e}</div>
+      </div>`;
+    }).join("")}
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn primary" onclick="restartSim()">🔁 Novo simulado</button>
+    </div>`;
+  }
+
+  return `
+  ${nav("Voltar ao mapa", "go('home')")}
+  <div class="hero" style="padding:10px 0 16px">
+    <h1 style="font-size:26px">🎯 Simulado Oral</h1>
+    <p>5 questões aleatórias · sem feedback até o final</p>
+  </div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div class="small" style="font-weight:800;letter-spacing:.6px">TEMPO RESTANTE</div>
+      <div class="timer ${t<60?'danger':''}">${mm}:${ss}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="small">Respondidas</div>
+      <div style="font-size:20px;font-weight:900">${Object.keys(sim.answers).length}/5</div>
+    </div>
+  </div>
+  ${sim.qs.map((x,i)=>`
+    <div class="qbox">
+      <div class="qhead">
+        <span class="qnum">Q ${i+1}</span>
+        <span class="qtext">${x.q.q}</span>
+      </div>
+      <div class="opts">
+        ${x.q.o.map((o,oi)=>`
+          <button class="opt ${sim.answers[i]===oi?'correct':''}" onclick="simAnswer(${i},${oi})">
+            <span class="ltr">${letters[oi]}</span><span>${o}</span>
+          </button>`).join("")}
+      </div>
+    </div>`).join("")}
+  <div style="text-align:center;margin:16px 0 30px">
+    <button class="btn primary" onclick="submitSim()">✅ Finalizar simulado</button>
+  </div>`;
+}
+
+function simAnswer(i, oi){
+  if(!sim || sim.submitted) return;
+  sim.answers[i] = oi;
+  render();
+}
+function submitSim(){
+  if(!sim) return;
+  sim.submitted = true;
+  clearInterval(simTimer);
+  const correct = sim.qs.filter((x,i)=> sim.answers[i] === x.q.a).length;
+  if(correct >= 4) { confetti(120); }
+  render();
+  toast(`Resultado: ${correct}/5`);
+}
+function restartSim(){
+  clearInterval(simTimer);
+  sim = null;
+  render();
+}
+function startTimer(){
+  clearInterval(simTimer);
+  simTimer = setInterval(()=>{
+    if(!sim || sim.submitted){ clearInterval(simTimer); return; }
+    sim.timeLeft--;
+    if(sim.timeLeft <= 0){ sim.timeLeft = 0; submitSim(); return; }
+    if(view.name === "simulado" && !sim.submitted){
+      // lightweight update of timer
+      const el = document.querySelector(".timer");
+      if(el){
+        const mm = String(Math.floor(sim.timeLeft/60)).padStart(2,"0");
+        const ss = String(sim.timeLeft%60).padStart(2,"0");
+        el.textContent = mm+":"+ss;
+        if(sim.timeLeft < 60) el.classList.add("danger");
+      }
+    }
+  }, 1000);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVEGAÇÃO
+   ═══════════════════════════════════════════════════════════════ */
+
+function go(name, id, tab){
+  if(name !== "simulado"){ clearInterval(simTimer); }
+  view = {name, id, tab};
+  if(name === "cheatsheet") csQuery = "";
+  render();
+}
+
+function resetAll(){
+  if(!confirm("Zerar todo o progresso?")) return;
+  S = {xp:0, answers:{}, contentRead:{}, fcIndex:0, revealed:{}};
+  save(); render(); toast("Progresso zerado 🔄");
+}
+
+/* FAB — revisão rápida */
+document.getElementById("fab").addEventListener("click", ()=>{
+  if(view.name !== "flashcards"){ fcDeck = null; }
+  go("flashcards");
+});
+
+/* boot */
+render();
+</script>
+</body>
+</html>
